@@ -16,14 +16,14 @@ public class Board {
 
     public Board() {
         squares = new Piece[SIZE][SIZE];
-        whitePieces = new HashSet<Piece>();
-        blackPieces = new HashSet<Piece>();
+        whitePieces = new HashSet<>();
+        blackPieces = new HashSet<>();
         whiteKing = null;
         blackKing = null;
     }
 
     public void add(Piece piece) {
-        if (get(p.location()) != null) {
+        if (get(piece.location()) != null) {
             throw new IllegalArgumentException("Piece's square is already taken");
         }
         if (piece instanceof King) {
@@ -125,7 +125,7 @@ public class Board {
 
     // inputted color refers to king to consider
     public Set<Piece> inCheck(Color c) {
-        Set<Piece> threats = new HashSet<Piece>();
+        Set<Piece> threats = new HashSet<>();
         King king = king(c);
         Square kingSquare = king.location();
         for (Direction d: Direction.straightValues()) {
