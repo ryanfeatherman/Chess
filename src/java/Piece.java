@@ -1,5 +1,7 @@
 package java;
 
+import java.util.Set;
+
 public abstract class Piece {
     
     private Board board;
@@ -20,7 +22,13 @@ public abstract class Piece {
         return location;
     }
 
+    public void setLocation(Square s) {
+        location = s;
+    }
+
     public Color color() {
         return color;
     }
+
+    public abstract Set<Square> getMoves();
 }

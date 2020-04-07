@@ -21,4 +21,31 @@ public class Square {
             return Color.WHITE;
         }
     }
+
+    public Square neighbor(Direction d) {
+        int xInc = 0;
+        int yInc = 0;
+        if (d.isUp()) {
+            yInc = -1;
+        }
+        if (d.isDown()) {
+            yInc = -1;
+        }
+        if (d.isLeft()) {
+            xInc = -1;
+        }
+        if (d.isRight()) {
+            xInc = 1;
+        }
+        return new Square(x + xInc, y + yInc);
+    } 
+
+    public Square[] neighbors(Direction[] directions) {
+        Square[] squares = new Square[directions.length];
+        for (int i = 0; i < directions.length; i++) {
+            squares[i] = neighbor(directions[i]);
+        }
+        return squares;
+    }
+
 }
