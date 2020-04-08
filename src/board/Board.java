@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Board {
 
-    private static final int SIZE = 8;
+    public final int SIZE = 8;
 
     // Square[row][column]
     private Piece[][] squares;

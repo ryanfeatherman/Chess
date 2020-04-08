@@ -28,7 +28,30 @@ public class Pawn extends Piece {
 
     @Override
     public Set<Square> getMoves() {
-        return null;
+        Set<Square> moves = new HashSet<Square>();
+        Square next = location.neighbor(moveDirection);
+        if (board.inBounds(next) && board.get(next) == null) {
+            if (board.causesCheck(location, next).isEmpty()) {
+                moves.add(next);
+            }
+        }
+        if ((color == Color.WHITE && location.y == 1) || (color == Color.BLACK && location.x == board.SIZE - 1)) {
+            Square extra = next.neighbor(moveDirection);
+            if (board.inBounds(extra) && board.get(extra) == null) {
+                if (board.causesCheck(location, extra).isEmpty()) {
+                    moves.add(next);
+                }
+            }
+        }
+        for (Square capture: next.neighbors(new Direction[] {Direction.LEFT, Direction.RIGHT})) {
+            if (board.inBounds(capture) && board.get(capture) != null) {
+                Piece take = board.get(capture);
+                if (take.color() != color && board.causesCheck(location, capture).isEmpty()) {
+                    moves.add(next);
+                }
+            }
+        }
+        return moves;
     }
 
 
