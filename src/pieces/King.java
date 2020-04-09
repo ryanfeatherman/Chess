@@ -3,7 +3,9 @@ package pieces;
 import board.Board;
 import board.Square;
 import util.Color;
+import util.Direction;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class King extends Piece {
@@ -18,6 +20,15 @@ public class King extends Piece {
 
     @Override
     public Set<Square> getMoves() {
-        return null;
+        Set<Square> moves = new HashSet<Square>();
+        for (Square s: location.neighbors(Direction.values())) {
+            if (board.inBounds(s)) {
+                Piece p = board.get(s);
+                if (p.color() != color && !board.causesCheck(location, s).isEmpty()) {
+                    moves.add(s);
+                }
+            }
+        }
+        return moves;
     }
 }

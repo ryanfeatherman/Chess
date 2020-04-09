@@ -4,6 +4,7 @@ import board.Board;
 import board.Square;
 import util.Color;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Knight extends Piece {
@@ -19,6 +20,23 @@ public class Knight extends Piece {
 
     @Override
     public Set<Square> getMoves() {
-        return null;
+        Set<Square> moves = new HashSet<>();
+        Square[] knightSquares = {new Square(location.x - 2, location.y - 1),
+                                  new Square(location.x - 2, location.y + 1),
+                                  new Square(location.x - 1, location.y - 2),
+                                  new Square(location.x - 1, location.y + 2),
+                                  new Square(location.x + 1, location.y - 2),
+                                  new Square(location.x + 1, location.y + 2),
+                                  new Square(location.x + 2, location.y - 1),
+                                  new Square(location.x + 2, location.y + 1)};
+        for (Square s: knightSquares) {
+            if (board.inBounds(s)) {
+                Piece p = board.get(s);
+                if (p.color() != color && !board.causesCheck(location, s).isEmpty()) {
+                    moves.add(s);
+                }
+            }
+        }
+        return moves;
     }
 }
