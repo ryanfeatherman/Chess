@@ -17,6 +17,13 @@ public class Board {
     private Set<Piece> blackPieces;
     private King whiteKing;
     private King blackKing;
+    private boolean wCastleKing;
+    private boolean wCastleQueen;
+    private boolean bCastleKing;
+    private boolean bCastleQueen;
+    private boolean whiteInCheck;
+    private boolean blackInCheck;
+
 
     public Board() {
         squares = new Piece[SIZE][SIZE];
@@ -24,6 +31,12 @@ public class Board {
         blackPieces = new HashSet<>();
         whiteKing = null;
         blackKing = null;
+        wCastleKing = true;
+        wCastleQueen = true;
+        bCastleKing = true;
+        bCastleQueen = true;
+        whiteInCheck = false;
+        blackInCheck = false;
     }
 
     public void add(Piece piece) {
@@ -79,6 +92,30 @@ public class Board {
 
     public boolean inBounds(Square s) {
         return inBounds(s.x, s.y);
+    }
+
+    public boolean wCastleKing() {
+        return wCastleKing;
+    }
+
+    public boolean wCastleQueen() {
+        return wCastleQueen;
+    }
+
+    public boolean bCastleKing() {
+        return bCastleKing;
+    }
+
+    public boolean bCastleQueen() {
+        return bCastleQueen;
+    }
+
+    public boolean whiteInCheck() {
+        return whiteInCheck;
+    }
+
+    public boolean blackInCheck() {
+        return blackInCheck;
     }
 
     public Piece getNearestPieceInDirection(Square s, Direction d) {
