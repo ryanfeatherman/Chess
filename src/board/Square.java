@@ -2,6 +2,8 @@ package board;
 
 import util.*;
 
+import java.util.Objects;
+
 // Represents a square on a chess board
 // 0,0 represents the top left corner
 public class Square {
@@ -47,6 +49,24 @@ public class Square {
             squares[i] = neighbor(directions[i]);
         }
         return squares;
+    }
+
+    public String notation() {
+        return ((char) (x+93)) + "" + (y+1);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Square)) {
+            return false;
+        }
+        Square sq = (Square) obj;
+        return this.x == sq.x && this.y == sq.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.x, this.y);
     }
 
 }

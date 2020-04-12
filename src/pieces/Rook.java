@@ -20,7 +20,7 @@ public class Rook extends Piece {
 
     @Override
     public Set<Square> getMoves() {
-        Set<Square> moves = new HashSet<Square>();
+        Set<Square> moves = new HashSet<>();
         for (Direction d: Direction.straightValues()) {
             Square s = location;
             s = s.neighbor(d);
@@ -38,5 +38,10 @@ public class Rook extends Piece {
             }
         }
         return moves;
+    }
+
+    @Override
+    public String notation() {
+        return "R";
     }
 }

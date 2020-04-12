@@ -19,7 +19,7 @@ public class Queen extends Piece {
 
     @Override
     public Set<Square> getMoves() {
-        Set<Square> moves = new HashSet<Square>();
+        Set<Square> moves = new HashSet<>();
         for (Direction d: Direction.values()) {
             Square s = location;
             s = s.neighbor(d);
@@ -37,5 +37,10 @@ public class Queen extends Piece {
             }
         }
         return moves;
+    }
+
+    @Override
+    public String notation() {
+        return "Q";
     }
 }

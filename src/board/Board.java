@@ -4,7 +4,9 @@ import pieces.*;
 import util.Color;
 import util.Direction;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Board {
@@ -17,13 +19,17 @@ public class Board {
     private Set<Piece> blackPieces;
     private King whiteKing;
     private King blackKing;
+    //private Rook wKingRook;
+    //private Rook wQueenRook;
+    //private Rook bKingRook;
+    //private Rook bQueenRook;
     private boolean wCastleKing;
     private boolean wCastleQueen;
     private boolean bCastleKing;
     private boolean bCastleQueen;
     private boolean whiteInCheck;
     private boolean blackInCheck;
-
+    private List<Move> moveList;
 
     public Board() {
         squares = new Piece[SIZE][SIZE];
@@ -31,12 +37,17 @@ public class Board {
         blackPieces = new HashSet<>();
         whiteKing = null;
         blackKing = null;
+        //wKingRook = null;
+        //wQueenRook = null;
+        //bKingRook = null;
+        //bQueenRook = null;
         wCastleKing = true;
         wCastleQueen = true;
         bCastleKing = true;
         bCastleQueen = true;
         whiteInCheck = false;
         blackInCheck = false;
+        moveList = new ArrayList<>();
     }
 
     public void add(Piece piece) {
@@ -147,11 +158,31 @@ public class Board {
 
     public Set<Piece> causesCheck(Square origin, Square dest) {
         if (!inBounds(origin) || !inBounds(dest)) {
-            throw new IllegalArgumentException("Sqaures must be in bounds");
+            throw new IllegalArgumentException("Squares must be in bounds");
+        }
+        if (origin.equals(dest)) {
+            throw new IllegalArgumentException("Origin and destination cannot be the same");
         }
         Piece p = get(origin);
         if (p == null) {
             throw new IllegalArgumentException("Origin square must be occupied");
+        }
+        boolean castle = p instanceof King && Math.abs(dest.x - origin.x) == 2;
+        if (castle) {
+            Square rookOrigin;
+            Square rookDest;
+            if (dest.x > origin.x) {  // king side
+                rookOrigin = new Square(7, origin.y);
+                rookDest = new Square(5, origin.y);
+            }
+            else {  // queen side
+                rookOrigin = new Square(0, origin.y);
+                rookDest = new Square(3, origin.y);
+            }
+            Piece rook = get(rookOrigin);
+            set(rookDest, rook);
+            set(rookOrigin, null);
+            rook.setLocation(rookDest);
         }
         Piece replaced = get(dest);
         set(dest, p);
@@ -161,6 +192,22 @@ public class Board {
         set(dest, replaced);
         set(origin, p);
         p.setLocation(origin);
+        if (castle) {
+            Square rookOrigin;
+            Square rookDest;
+            if (dest.x > origin.x) {  // king side
+                rookOrigin = new Square(7, origin.y);
+                rookDest = new Square(5, origin.y);
+            }
+            else {  // queen side
+                rookOrigin = new Square(0, origin.y);
+                rookDest = new Square(3, origin.y);
+            }
+            Piece rook = get(rookDest);
+            set(rookDest, null);
+            set(rookOrigin, rook);
+            rook.setLocation(rookOrigin);
+        }
         return result;
     }
 
@@ -222,6 +269,102 @@ public class Board {
             }
         }
         return threats;
+    }
+
+    public void move(Square origin, Square dest) {
+        if (!inBounds(origin) || !inBounds(dest)) {
+            throw new IllegalArgumentException("Squares must be in bounds");
+        }
+        if (origin.equals(dest)) {
+            throw new IllegalArgumentException("Origin and destination cannot be the same");
+        }
+        Piece p = get(origin);
+        if (p == null) {
+            throw new IllegalArgumentException("Origin square must be occupied");
+        }
+        if (p instanceof Rook) {
+            if (p.color() == Color.WHITE) {
+                if (wCastleKing && p.location().equals(new Square(7, 0))) {
+                    wCastleKing = false;
+                }
+                if (wCastleQueen && p.location().equals(new Square(0, 0))) {
+                    wCastleQueen = false;
+                }
+            }
+            else {
+                if (bCastleKing && p.location().equals(new Square(7, 7))) {
+                    bCastleKing = false;
+                }
+                if (bCastleQueen && p.location().equals(new Square(0, 7))) {
+                    bCastleQueen = false;
+                }
+            }
+        }
+        if (p instanceof King) {
+            if (p.color() == Color.WHITE) {
+                wCastleKing = false;
+                wCastleQueen = false;
+            }
+            else {
+                bCastleKing = false;
+                bCastleQueen = false;
+            }
+        }
+        Piece replaced = get(dest);
+        set(dest, p);
+        set(origin, null);
+        p.setLocation(dest);
+        String moveString = p.notation();
+        if (replaced != null) {
+            getPieceSet(replaced.color()).remove(replaced);
+            moveString += "x";
+        }
+        moveString += dest.notation();
+        if (p instanceof King && Math.abs(dest.x - origin.x) == 2) {
+            Square rookOrigin;
+            Square rookDest;
+            if (dest.x > origin.x) {  // king side
+                rookOrigin = new Square(7, origin.y);
+                rookDest = new Square(5, origin.y);
+                moveString = "O-O";
+            }
+            else {  // queen side
+                rookOrigin = new Square(0, origin.y);
+                rookDest = new Square(3, origin.y);
+                moveString = "O-O-O";
+            }
+            Piece rook = get(rookOrigin);
+            set(rookDest, rook);
+            set(rookOrigin, null);
+            rook.setLocation(rookDest);
+        }
+        if (inCheck(Color.inv(p.color())).isEmpty()) {  // does not cause check
+            if (p.color() == Color.WHITE) {
+                blackInCheck = false;
+            }
+            else {
+                whiteInCheck = false;
+            }
+        }
+        else {                                         // does cause check
+            if (p.color() == Color.WHITE) {
+                blackInCheck = true;
+            }
+            else {
+                whiteInCheck = true;
+            }
+            moveString += "+";
+        }
+        moveList.add(new Move(origin, dest, replaced, moveString));
+    }
+
+    public Set<Piece> getPieceSet(Color c) {
+        if (c == Color.WHITE) {
+            return whitePieces;
+        }
+        else {
+            return blackPieces;
+        }
     }
 
     public King king(Color c) {

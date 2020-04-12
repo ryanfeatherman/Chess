@@ -67,4 +67,9 @@ public class King extends Piece {
         }
         return moves;
     }
+
+    @Override
+    public String notation() {
+        return "K";
+    }
 }

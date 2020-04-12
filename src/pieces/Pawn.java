@@ -28,7 +28,7 @@ public class Pawn extends Piece {
 
     @Override
     public Set<Square> getMoves() {
-        Set<Square> moves = new HashSet<Square>();
+        Set<Square> moves = new HashSet<>();
         Square next = location.neighbor(moveDirection);
         if (board.inBounds(next) && board.get(next) == null) {
             if (board.causesCheck(location, next).isEmpty()) {
@@ -52,6 +52,11 @@ public class Pawn extends Piece {
             }
         }
         return moves;
+    }
+
+    @Override
+    public String notation() {
+        return "";
     }
 
 

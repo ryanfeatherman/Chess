@@ -35,4 +35,6 @@ public abstract class Piece {
     }
 
     public abstract Set<Square> getMoves();
+
+    public abstract String notation();
 }

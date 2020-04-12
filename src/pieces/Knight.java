@@ -9,7 +9,6 @@ import java.util.Set;
 
 public class Knight extends Piece {
 
-
     public Knight(Square s, Color c, Board b) {
         super(s, c, b);
     }
@@ -38,5 +37,10 @@ public class Knight extends Piece {
             }
         }
         return moves;
+    }
+
+    @Override
+    public String notation() {
+        return "N";
     }
 }
