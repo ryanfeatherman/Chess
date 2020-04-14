@@ -30,6 +30,7 @@ public class Board {
     private boolean whiteInCheck;
     private boolean blackInCheck;
     private List<Move> moveList;
+    private int fiftyCount;
 
     public Board() {
         squares = new Piece[SIZE][SIZE];
@@ -48,6 +49,7 @@ public class Board {
         whiteInCheck = false;
         blackInCheck = false;
         moveList = new ArrayList<>();
+        fiftyCount = 0;
     }
 
     public void add(Piece piece) {
@@ -272,6 +274,7 @@ public class Board {
     }
 
     public void move(Square origin, Square dest) {
+        fiftyCount++;
         if (!inBounds(origin) || !inBounds(dest)) {
             throw new IllegalArgumentException("Squares must be in bounds");
         }
@@ -318,6 +321,10 @@ public class Board {
         if (replaced != null) {
             getPieceSet(replaced.color()).remove(replaced);
             moveString += "x";
+            fiftyCount = 0;
+        }
+        if (p instanceof Pawn) {
+            fiftyCount = 0;
         }
         moveString += dest.notation();
         if (p instanceof King && Math.abs(dest.x - origin.x) == 2) {
@@ -373,6 +380,70 @@ public class Board {
         }
         else {
             return blackKing;
+        }
+    }
+
+    public boolean hasMoves(Color c) {
+        for (Piece p: getPieceSet(c)) {
+            if (!p.getMoves().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean sufficientMaterial() {
+        if (whitePieces.size() > 2 || blackPieces.size() > 2) {
+            return true;
+        }
+        Piece lastWhite = null;
+        for (Piece p: whitePieces) {
+            if (!(p instanceof King)) {
+                lastWhite = p;
+            }
+        }
+        Piece lastBlack = null;
+        for (Piece p: blackPieces) {
+            if (!(p instanceof King)) {
+                lastBlack = p;
+            }
+        }
+        if (lastWhite instanceof Queen || lastBlack instanceof Queen ||
+            lastWhite instanceof Rook || lastBlack instanceof Rook ||
+            lastWhite instanceof Pawn || lastBlack instanceof Pawn) {
+            return false;
+        }
+        // both pieces are knight or bishop or null
+        else if (lastWhite == null || lastBlack == null) {
+            // king king, king bishop, king knight are draws
+            return true;
+        }
+        else if (lastWhite instanceof Bishop && lastBlack instanceof Bishop) {
+            // same color bishops are a draw, opposite are not
+            return lastWhite.location().color() == lastBlack.location().color();
+        }
+        // bishop knight and knight knight are not draws
+        return true;
+    }
+
+    // to be called right before c moves
+    public String isGameOver(Color c) {
+        if (!hasMoves(c)) {
+            if (!inCheck(c).isEmpty()) {
+                return "Checkmate";
+            }
+            else {
+                return "Stalemate";
+            }
+        }
+        else if (!sufficientMaterial()) {
+            return "Insufficient material";
+        }
+        else if (fiftyCount >= 50) {
+            return "50 move rule";
+        }
+        else {
+            return null;
         }
     }
 
