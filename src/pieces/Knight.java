@@ -43,4 +43,10 @@ public class Knight extends Piece {
     public String notation() {
         return "N";
     }
+
+    @Override
+    public char textSymbol() {
+        if (color == Color.WHITE) return '\u2658';
+        else return '\u265E';
+    }
 }

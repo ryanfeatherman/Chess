@@ -44,4 +44,10 @@ public class Bishop extends Piece {
     public String notation() {
         return "B";
     }
+
+    @Override
+    public char textSymbol() {
+        if (color == Color.WHITE) return '\u2657';
+        else return '\u265D';
+    }
 }

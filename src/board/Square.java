@@ -5,7 +5,7 @@ import util.*;
 import java.util.Objects;
 
 // Represents a square on a chess board
-// 0,0 represents the top left corner
+// 0,0 represents the bottom left corner
 public class Square {
     
     public final int x;
@@ -29,7 +29,7 @@ public class Square {
         int xInc = 0;
         int yInc = 0;
         if (d.isUp()) {
-            yInc = -1;
+            yInc = 1;
         }
         if (d.isDown()) {
             yInc = -1;

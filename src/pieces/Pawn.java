@@ -59,5 +59,9 @@ public class Pawn extends Piece {
         return "";
     }
 
-
+    @Override
+    public char textSymbol() {
+        if (color == Color.WHITE) return '\u2659';
+        else return '\u265F';
+    }
 }

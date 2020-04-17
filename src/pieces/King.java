@@ -72,4 +72,10 @@ public class King extends Piece {
     public String notation() {
         return "K";
     }
+
+    @Override
+    public char textSymbol() {
+        if (color == Color.WHITE) return '\u2654';
+        else return '\u265a';
+    }
 }

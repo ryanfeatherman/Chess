@@ -44,4 +44,10 @@ public class Rook extends Piece {
     public String notation() {
         return "R";
     }
+
+    @Override
+    public char textSymbol() {
+        if (color == Color.WHITE) return '\u2656';
+        else return '\u265C';
+    }
 }

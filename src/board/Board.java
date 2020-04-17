@@ -4,12 +4,15 @@ import pieces.*;
 import util.Color;
 import util.Direction;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Board {
+
+    private static PrintWriter writer = new PrintWriter(System.out,true);
 
     public final int SIZE = 8;
 
@@ -447,4 +450,13 @@ public class Board {
         }
     }
 
+    public void print() {
+        for (Piece[] row: squares) {
+            for (Piece p: row) {
+                if (p == null) writer.print(" ");
+                else writer.print(p.textSymbol());
+            }
+            writer.println();
+        }
+    }
 }

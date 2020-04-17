@@ -43,4 +43,10 @@ public class Queen extends Piece {
     public String notation() {
         return "Q";
     }
+
+    @Override
+    public char textSymbol() {
+        if (color == Color.WHITE) return '\u2655';
+        else return '\u265B';
+    }
 }
